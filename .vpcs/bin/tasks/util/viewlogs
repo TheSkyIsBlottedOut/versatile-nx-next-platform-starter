@@ -1,0 +1,67 @@
+#!/usr/bin/env ruby
+#- vpcs viewlogs [logprefix] [searchterm] - view/grep logs. Both args optional.
+require 'json'
+require 'yaml'
+require 'hashie'
+require 'colorize'
+class Dex < Hashie::Mash; disable_warnings; end
+Config = Dex.new(YAML.load_file("#{ENV['APP_ROOT']}/vpcs.yml"))
+if File.exist?([ENV['APP_ROOT'], 'logs', "#{ARGV[0]}.log"].join(?/))
+  logfile = IO.readlines([ENV['APP_ROOT'], 'logs', "#{ARGV[0]}.log"].join(?/))
+  ARGV.shift
+else
+  project = Config.apps.webservice
+  logfile = IO.readlines([ENV['APP_ROOT'], 'logs', "#{project}.log"].join(?/))
+end
+
+searchterm = ARGV[0] || nil
+def printObject(obj, indent = 0)
+  s = ' ' * indent
+  next_indent = indent + 2
+  unless [Array, Hash].include?(obj.class)
+    puts "#{s}#{obj}".colorize(:white)
+    return
+  end
+  longest_key = obj.keys.max_by(&:length).length rescue 1
+
+  obj.each do |key, value|
+    ss = ' ' * (longest_key - key.length)
+    print "#{s}#{key.colorize(:light_blue)}:"
+    print "#{ss}" unless [Array, Hash].include?(value.class)
+    if value.is_a?(Hash)
+      puts "{".colorize(:white)
+      printObject(value, next_indent)
+      puts "#{s}}".colorize(:white)
+    elsif value.is_a?(Array)
+      puts "[".colorize(:white)
+      value.each {|i| printObject(i, next_indent)}
+      puts "]".colorize(:white)
+    elsif [true].include?(value)
+      puts "#{value}".colorize(:light_green)
+    elsif [nil, false].include?(value)
+      puts "#{value}".colorize(:light_red)
+    else
+      puts "#{value}".colorize(:white)
+    end
+  end
+end
+
+logfile = IO.readlines("#{ENV['APP_ROOT']}/logs/#{project}.log")
+if (searchterm)
+  logfile = logfile.select {|line| line.include?(searchterm)}
+end
+logfile.each do |line|
+  prefix = line.match(/^[^\{]+/).to_s
+  puts prefix.colorize(:light_yellow)
+  jsonObj = line[prefix.length..-1]
+  next if jsonObj.nil?
+  begin
+    parsed = JSON.parse(jsonObj)
+    printObject(parsed)
+    puts "---------------------------------".colorize(:light_black)
+  rescue
+    IO.write('/tmp/vpcs.log', jsonObj)
+    $< << `cat /tmp/vpcs.log | jq .`
+  end
+end
+

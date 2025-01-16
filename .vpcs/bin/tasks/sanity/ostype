@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# vpcs sanity ostype - returns the os. also detects architecture and exports it; this should go into an init env-profile.
+# What os are we on
+# Macs will show Darwin x86_64 or Darwin arm64
+# Don't know alpine yet so will use a different method
+
+[[ ! -z "$VPCS_TaskOS" ]] && echo "$VPCS_TaskOS" && exit 0;
+TaskOS=''
+Uname="$(uname -a)"
+isOSMatch() {
+  if [[ "$Uname" =~ $1 ]]; then
+    TaskOS="$2"
+    echo "$TaskOS"
+    exit 0
+  fi
+}
+
+isOSMatch 'Darwin' 'mac'
+isOSMatch 'Ubuntu' 'ubuntu'
+isOSMatch 'Debian' 'debian'
+isOSMatch 'CentOS' 'centos'
+isOSMatch 'Fedora' 'fedora'
+isOSMatch 'Alpine' 'alpine'
+isOSMatch 'Arch' 'arch'
+isOSMatch 'Manjaro' 'manjaro'
+isOSMatch 'openSUSE' 'opensuse'
+isOSMatch 'SUSE' 'suse'
+isOSMatch 'FreeBSD' 'freebsd'
+isOSMatch 'NetBSD' 'netbsd'
+isOSMatch 'OpenBSD' 'openbsd'
+isOSMatch 'DragonFly' 'dragonfly'
+isOSMatch 'Solaris' 'solaris'
+isOSMatch 'SunOS' 'sunos'
+isOSMatch 'AIX' 'aix'
+isOSMatch 'HP-UX' 'hpux'
+isOSMatch 'IRIX' 'irix'
+isOSMatch 'OSF1' 'osf1'
+isOSMatch 'SCO' 'sco'
+isOSMatch 'UnixWare' 'unixware'
+isOSMatch 'Minix' 'minix'
+isOSMatch 'Haiku' 'haiku'
+isOSMatch 'Hurd' 'hurd'
+isOSMatch 'Plan9' 'plan9'
+isOSMatch 'Inferno' 'inferno'
+isOSMatch 'QNX' 'qnx'
+isOSMatch 'BeOS' 'beos'
+isOSMatch 'AmigaOS' 'amigaos'
+isOSMatch 'MorphOS' 'morphos'
+isOSMatch 'AROS' 'aros'
+isOSMatch 'RISC OS' 'riscos'
+isOSMatch 'Syllable' 'syllable'
+isOSMatch 'SkyOS' 'skyos'
+isOSMatch 'MenuetOS' 'menuetos'
+isOSMatch 'KolibriOS' 'kolibrios'
+isOSMatch 'Visopsys' 'visopsys'
+isOSMatch 'ReactOS' 'reactos'
+isOSMatch 'Haiku' 'haiku'
+isOSMatch 'MorphOS' 'morphos'
+isOSMatch 'AROS' 'aros'
+TaskOS="${TaskOS:-unknown}"
+echo "$TaskOS"
+exit 0

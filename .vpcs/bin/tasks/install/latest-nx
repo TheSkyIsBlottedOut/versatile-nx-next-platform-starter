@@ -1,0 +1,4 @@
+#!/bin/bash
+vpcs sanity node-basics
+pnpm add -g nx@latest
+rm $VPCS_ROOT/bin/nx

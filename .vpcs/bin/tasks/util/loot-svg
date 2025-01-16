@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+#- usage: vpcs loot-svg <url> <component> loot an svg file online and convert it into a BasedSVG component
+require 'open-uri'
+require 'nokogiri'
+require 'hashie'
+require 'json'
+
+
+location = ARGV.shift
+classname = ARGV.shift
+
+contnt = (location =~ /^http/) ? open(location).read : IO.read(location)
+doc = Nokogiri::HTML(contnt)
+svg = doc.at_css('svg')
+# get height, width, and viewbox params
+config = Hashie::Mash.new
+%w{ height width viewBox fill stroke }.each do |attr|
+  config[attr] = svg[attr]
+end
+ary = config.viewBox.split(/\s+/)
+w, h, width, height = ary.map(&:to_i)
+
+props = Hashie::Mash.new
+props.size = config.width
+props.viewBox = { x: w, y: h, width: width, height: height }
+props.colors = { bg: 'none', fg: 'currentColor' }
+props.width = config.width
+props.height = config.height
+svg_contents = svg.children.map(&:to_s)
+svg_contents.gsub(/fill=\"(#[0-9a-fA-F]+)\"/, 'fill={fill}').gsub(/stroke=\"(#[0-9a-fA-F]+)\"/, 'stroke={stroke}')
+svg = svg_contents.join("\n")
+
+
+const output = <<~JS
+import { BakedSVG } from './_core'
+const SVGProps = #{props.to_json}
+class #{classname} extends BakedSVG {
+  static get defaultConfiguration() { return SVGProps }
+  get path() {
+    const { width, height } = this.viewBox
+    const { fill, stroke } = this
+    return (
+      #{svg.to_s}
+    )
+  }
+}
+export { classname }
+JS
+output_path = "#{ENV['APP_ROOT']}/apps/palmfinancial/src/app/_components/svg/lib"
+`mkdir -p #{output_path}`
+File.write("#{output_path}/#{classname}.jsx", output)
+puts "Wrote to #{output_path}"
+exit 0

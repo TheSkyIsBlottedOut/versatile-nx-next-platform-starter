@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Changes the linked envfile from core .envrc too...
+[[ "$1" =~ ^development|ci|catfood|staging|production$ ]] && NewEnvironment="$1" || vpcs log error "Incorrect environment! Use development, ci, catfood, staging, or production."
+[[ "$NewEnvironment" = "development" ]] && NewNodeEnv="development" || NewNodeEnv="production"
+export VPCS_ENV="$NewEnvironment"
+rm -rf .vpcs/tmp/*
+Content=$( cat <<-:
+  export VPCS_ENVIRONMENT="$NewEnvironment"
+  export NODE_ENV="$NewNodeEnv"
+)
+vpcs init env-profile environment.profile "$Content"

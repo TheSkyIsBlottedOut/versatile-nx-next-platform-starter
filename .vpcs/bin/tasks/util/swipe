@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#- vpcs swipe [branch] [file] [file] [file] ... will swipe the files from the branch to the current branch.
+# VPCS swipe files from another branch
+[[ -z "$1" ]] && vpcs log error "Please provide a branch for the vpcs swipe."
+[[ -z "$2" ]] && vpcs log error "Please provide a file to swipe."
+Branch="$1"
+shift 1
+Files=("$@")
+for File in "${Files[@]}"; do
+  git checkout "$Branch" -- "$File"
+done
+exit 0

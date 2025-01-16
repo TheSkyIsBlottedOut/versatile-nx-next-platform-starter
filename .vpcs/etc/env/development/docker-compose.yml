@@ -1,0 +1,8 @@
+services:
+  technophrenia:
+    image: technophrenia
+    build:
+      context: .
+      dockerfile: ./.vpcs/etc/env/development/Dockerfile
+      ssh:
+        - default

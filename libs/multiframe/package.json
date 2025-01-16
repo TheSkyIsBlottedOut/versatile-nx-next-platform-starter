@@ -1,0 +1,13 @@
+{
+  "name": "multiframe",
+  "version": "0.0.1",
+  "dependencies": {},
+  "main": "./index.ts",
+  "module": "./index.ts",
+  "private": false,
+  "buildable": true,
+  "exports": {
+    "express": "./express.ts",
+    "next": "./next.ts"
+  }
+}

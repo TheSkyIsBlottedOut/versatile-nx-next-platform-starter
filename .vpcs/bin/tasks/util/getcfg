@@ -1,0 +1,4 @@
+#!/bin/bash
+#- vpcs getcfg ".key1.key2" - loads configuration calls from vpcs.yml.
+[[ -x $(which yq) ]] || vpcs sanity cfg-calls "${A[0]}"
+cat $(locate vpcs-config) | yq "$@"

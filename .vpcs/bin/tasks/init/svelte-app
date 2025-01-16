@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#- vpcs init svelte-app <appname> - creates a new svelte app
+
+vpcs sanity nx-workspace
+vpcs sanity pnpm-pkg svelte
+pnpm -D vitest vite svelte svelte-check @sveltejs/vite-plugin-svelte && pnpm exec nx add @nx/vite @nx/js
+
+if [[  -z "$1" ]]; then
+  vpcs log info "Svelte installed; rerun with an appname to generate an app."
+  exit 0;
+fi
+UseJS="true"
+[[ "$(vpcs getcfg ".apps.language")" == "ts"  ]] && UseJS="false"
+AppName="$(echo $1 | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')"
+if [[ "$AppName" =~ ^.?.?$  ]]; then
+  vpcs log error "App name \"$1\" resolves to libname \"$AppName\" with fewer than 3 characters; please choose a different name."
+  exit 1
+fi
+shift 1
+nx g @nx/web:app apps/$AppName --name="$AppName" --tags="vpcs app svelte" --js="$UseJS" --projectNameAndRootFormat="as-provided" --e2e --use-pnpm "$@" -- -- "$AppName"
+mkdir -p apps/$AppName/src
+cp -r $VPCS_ROOT/templates/svelte-app/* apps/$AppName
+sed -i 's/\{\{AppName\}\}/'$AppName'/g' apps/$AppName/src/App.svelte > /apps/$AppName/src/App.svelte
+echo "Svelte has incomplete support. Check https://nx.dev/showcase/example-repos/add-svelte."
+exit 0

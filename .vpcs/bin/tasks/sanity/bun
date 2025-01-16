@@ -1,0 +1,5 @@
+#!/usr/bin/env "$(ps -p $$ -o comm= | sed -e 's/^-//')"
+BUN_SHELL_URL="https://bun.sh/install"
+if [[ -z "$(command -v bun $NOERR)" ]]; then
+  curl -fsSL $BUN_SHELL_URL | bash
+fi

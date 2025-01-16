@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#- vpcs init rust-binary <binary> - create a new rust binary project.
+
+AppName="$1"
+
+[[ -z "$AppName" ]] && echo "Please provide a name for the binary." && exit 1
+nx generate @monodon/rust:binary $AppName --directory=apps/rust/$AppName --tags="rust-binary vpcs"
+echo "Please check https://github.com/cammisuli/monodon/tree/main/packages/rust for usage info." >&2
+exit 0

@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+logs/*
+@logs/*
+!logs/.gitkeep
+tmp
+.DS_Store
+.nx
+.vscode
+node_modules/**/*

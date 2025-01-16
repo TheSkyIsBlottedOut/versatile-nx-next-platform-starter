@@ -1,0 +1,74 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "allowJs": true,
+    "strict": false,
+    "noImplicitOverride": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": false,
+    "strictPropertyInitialization": false,
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@c/assets/*": ["apps/concerto/src/assets/*"],
+      "@c/config/*": ["apps/concerto/src/config/*"],
+      "@c/helpers": ["apps/concerto/src/helpers/index.js"],
+      "@c/middlewares/*": ["apps/concerto/src/middlewares/*"],
+      "@c/models": ["apps/concerto/src/models/index.js"],
+      "@c/routes": ["apps/concerto/src/routes/index.js"],
+      "@c/services": ["apps/concerto/src/services/index.js"],
+      "@c/utils/*": ["apps/concerto/src/utils/*"],
+      "@concerto/*": ["apps/concerto/src/*"],
+      "@logs/*": ["logs/*"],
+      "@middleware/request-headers": [
+        "libs/middleware/request-headers/src/index.js"
+      ],
+      "@poco/app/*": ["apps/poco-a-poco/src/app/*"],
+      "@public/*": ["apps/palmfinancial/public/*"],
+      "@ux/general": ["libs/ux/components/general/src/index.ts"],
+      "@ux/pandora": ["libs/ux/components/pandora/src/index.ts"],
+      "@vpcs/app-logging": ["libs/vpcs/core/app-logging/src/index.js"],
+      "@vpcs/app-logging/client": ["libs/vpcs/core/app-logging/src/client.js"],
+      "@vpcs/app-logging/server": ["libs/vpcs/core/app-logging/src/server.js"],
+      "@vpcs/clientconfig": ["libs/vpcs/core/nextjsconfig/src/client.ts"],
+      "@vpcs/goodmode": ["libs/vpcs/core/goodmode/src/index.js"],
+      "@vpcs/nextjsconfig": ["libs/vpcs/core/nextjsconfig/src/index.ts"],
+      "@vpcs/nextjsconfig/client": [
+        "libs/vpcs/core/nextjsconfig/src/client.ts"
+      ],
+      "@vpcs/nextjsconfig/server": [
+        "libs/vpcs/core/nextjsconfig/src/next-server.ts"
+      ],
+      "@vpcs/nextserver": ["libs/vpcs/core/nextjsconfig/src/next-server.ts"],
+      "@vpcs/orchestrator-client": [
+        "libs/vpcs/core/orchestrator-client/src/index.js"
+      ],
+      "@vpcs/serverconfig": ["libs/vpcs/core/nextjsconfig/src/server.ts"],
+      "@web/api/*": ["apps/palmfinancial/src/api/*"],
+      "@web/components/*": ["apps/palmfinancial/src/app/_components/*"],
+      "@web/documents/*": ["apps/palmfinancial/src/app/documents/*"],
+      "@web/libs/*": ["apps/palmfinancial/src/_libs/*"],
+      "@web/pages/*": ["apps/palmfinancial/src/app/palm/*"],
+      "@web/providers/*": ["apps/palmfinancial/src/app/_providers/*"],
+      "@web/public/*": ["apps/palmfinancial/public/*"],
+      "@web/root/*": ["apps/palmfinancial/*"],
+      "@web/src/*": ["apps/palmfinancial/src/*"],
+      "@web/styles/*": ["apps/palmfinancial/src/app/styles/*"],
+      "multiframe": ["libs/multiframe/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp", "dist", ".vpcs/etc/template"]
+}

@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+#- core command runner. vpcs list to see the core utility set. vpcs --code [domain] [task] to open in $EDITOR.
+TaskFolder="$(dirname "$0")/tasks"
+chmod -R 755 "$TaskFolder" 2>/dev/null
+TaskOS="$($TaskFolder/sanity/ostype)"
+
+EditCode=1
+if [[ "$1" =~ ^\-+code$ ]]; then
+  EditCode=0
+  shift 1
+fi
+
+if [[ "$1" =~ ^install|init|sanity|sys|util$ ]]; then
+  TaskName="$2";
+  TaskType="$1";
+  shift 2;
+elif [[ -f "$TaskFolder/util/$1" ]]; then
+  TaskType="util"
+  TaskName="$1"
+  shift 1
+elif [[ "$(locate namespace $1)" != "/dev/null" ]]; then
+  chmod -R 755 "$(locate namespace $1)"
+  if [[ ! -x "$(locate namespace $1)/$2" ]]; then
+    echo "Cannot find executable for command/namespace $1!"
+    exit 1
+  else
+    $(locate namespace $1)/$2 "$@"
+    exit 0
+  fi
+else
+  echo "Cannot find executable for command/namespace $1!"
+  exit 1
+fi
+TaskPath="$TaskFolder/$TaskType"
+
+debugout(){
+  if [[ "$TaskName" =~ ^log$ ]]; then return 0; fi
+  $TaskFolder/util/log "debug" "vpcs debugger: $1"
+  return 0
+}
+
+GG="$@"
+
+ee(){
+  [[ ! -f "$1" ]]  && return 1;
+  if [[ $EditCode -eq 0 ]]; then
+    if [[ -z "$($EDITOR --help $NOERR)" ]]; then
+      if [[ -z "$(code --help $NOERR)" ]]; then
+        debugout "Code editor not found!"
+        return 1
+      else
+        code "$1"
+        exit 0
+      fi
+    else
+      $EDITOR "$1"
+      exit 0
+    fi
+  else
+    [[ ! -x "$1" ]] && chmod -R 755 "$1"
+    debugout "executing $TaskType $TaskName"
+    exec "$1" "$GG"
+    exit 0
+  fi
+  return 1
+}
+
+(ee "$TaskPath/$TaskName") && exit 0 || (ee "$TaskPath/$TaskOS/$TaskName") && exit 0
+debugout "vpcs failure: $TaskType $TaskName for OS $TaskOS"
+exit 1

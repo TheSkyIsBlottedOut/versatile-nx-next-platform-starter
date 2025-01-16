@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+#- vpcs util refresh-webconfig - refreshes the web config in @vpcs/nextjsconfig.
+ConfigFile="$(locate vpcs-config)"
+[[ -z "$ConfigFile" ]] && vpcs log error "Config file not found!" && exit 1
+vpcs sanity yaml-mgr
+vpcs sanity json-mgr
+vpcs log chatty "Updating web config..."
+WebService="$(vpcs getcfg ".apps.webservice")"
+[[ -z "$WebService" ]] && vpcs log error "No web service found in config!" && exit 1
+[[ -z "$(vpcs getcfg .services.$WebService.features)" ]] && vpcs log error "No features found in web service!" && exit 1
+ConfigApp="$(vpcs getcfg ".apps.config")"
+[[ -z "$ConfigApp" ]] && vpcs log error "No config service found in config - aborting." && exit 0
+Environment="$(vpcs getcfg .services.$WebService.features.public.globals.environment)"
+[[ "$Environment" == "null" ]] && Environment='development'
+# Needs the public webapp features and NEXT_PUBLIC values
+Target="$APP_ROOT/$(vpcs getcfg ".services.$ConfigApp.root")/src/lib/configs"
+[[ -d "$Target" ]] || mkdir -p $Target
+
+wrap(){
+  rm -f $3
+  echo "/* eslint-disable */" > $3
+  if [[ ! "$2" =~ ^\s*\{  ]]; then
+    echo "const $1 = {}; export { $1 };" > $3;
+  else
+    echo "const $1 = {...($2)};" > $3
+    echo "export { $1 };" >> $3
+    echo "export default $1" >> $3
+  fi
+  return 0
+}
+
+wrap PublicConfig "$(cat $ConfigFile | yq -oj ".services.$WebService.features.public")" $Target/public.js
+wrap ServerConfig "$(cat $ConfigFile | yq -oj ".services.$WebService.features.server")" $Target/server.js
+wrap GlobalConfig "$(cat $ConfigFile | yq -oj ".services.$WebService.features.globals")" $Target/globals.js
+
+SecretsFile="$APP_ROOT/secrets/web-environments/$Environment.yml"
+
+echo "Secrets file: $SecretsFile"
+if [[ -f "$SecretsFile" ]]; then
+  wrap SecretsConfig "$(cat $SecretsFile | yq -oj .private)" $Target/secrets.js
+  wrap EnvConfig "$(cat $SecretsFile | yq -oj .public)" $Target/env.js
+else
+  vpcs log warn "No secrets file found at $SecretsFile. Generating empty file."
+  wrap SecretsConfig "{}" $Target/secrets.js
+  wrap EnvConfig "{}" $Target/env.js
+fi
+exit 0

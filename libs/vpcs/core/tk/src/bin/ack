@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+#- vpcs toolkit ack - test your namespace
+echo "Hello, toolkit!" 1>&2

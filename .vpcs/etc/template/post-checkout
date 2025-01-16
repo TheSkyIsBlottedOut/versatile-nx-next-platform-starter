@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+echo "Getting your submodules in order..." 1>&2
+git fetch -all
+git submodule sync --recursive
+git submodule update --init --recursive --remote --merge --force -- secrets

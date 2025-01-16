@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#- vpcs set-port <project> <port> - sets the port for the app to run on.
+AppName="$1"
+[[ -z "$AppName" ]] && vpcs log error "Usage: vpcs set-port <project> <port>" && exit 1
+Port="$2"
+[[ -z "$Port" ]] && vpcs log error "Usage: vpcs set-port <project> <port>" && exit 1
+AppPath="$(vpcs getcfg ".apps.$AppName.root")"
+[[ -z "$AppPath" ]] && vpcs log error "No app path found in vpcs.yml; please run vpcs nx2vpcs" && exit 1
+ProjectJson="$AppPath/project.json"
+[[ ! -f "$ProjectJson" ]] && vpcs log error "No project.json found at $ProjectJson" && exit 1
+TmpFile="$(locate tmp)/project.json.tmp"
+cat "$ProjectJson" | jq ".port = $Port" > "$TmpFile" && mv "$TmpFile" "$ProjectJson"
+exit 0

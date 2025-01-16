@@ -1,0 +1,7 @@
+#!/bin/bash
+#- vpcs serve - serve app with appropriate build targets.\
+AppName="$(vpcs getcfg ".apps.webservice")"
+
+[[ -z "$AppName" ]] && vpcs log error "No app name found in vpcs.yml; please add an app name to the configuration file." && exit 1;
+
+pnpm exec nx run "$AppName:serve" "$@"

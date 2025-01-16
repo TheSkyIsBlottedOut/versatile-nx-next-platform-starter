@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#- vpcs init vpcs-namespace <namespace> - creates a folder where you can run locate and vpcs commands.
+Namespace="$1"
+[[ -z "$Namespace" ]] && echo "Namespace is required." && exit 1
+[[ -d "$(locate namespace $Namespace)" ]] && echo "Namespace $Namespace already exists." && exit 1
+NamespacePath="$APP_ROOT/libs/vpcs/core/$Namespace/src/bin"
+mkdir -p "$NamespacePath"
+echo "#!/usr/bin/env bash" > "$NamespacePath/ack"
+echo "#- vpcs $Namespace ack - test your namespace" >> "$NamespacePath/ack"
+echo "echo \"Hello, $Namespace!\" 1>&2" >> "$NamespacePath/ack"
+chmod -R 755 "$NamespacePath"
+echo "Namespace $Namespace created at $NamespacePath." 1>&2
+echo "Try running 'locate namespace $Namespace' or 'vpcs $Namespace ack'." 1>&2
+exit 0

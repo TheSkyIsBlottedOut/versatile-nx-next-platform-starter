@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#- vpcs init rust <library> - create a new rust library project. Use --napi to enable napi support (not buildable)
+
+AppName="$1"
+
+[[ -z "$AppName" ]] && echo "Please provide a name for the library." && exit 1
+
+pnpm exec nx g @monodon/rust:library "$AppName" --directory=libs/rust/$AppName --tags="rust-library vpcs" "$@"
+echo "Please check https://nx.dev/showcase/example-repos/add-rust for usage info." >&2
+exit 0

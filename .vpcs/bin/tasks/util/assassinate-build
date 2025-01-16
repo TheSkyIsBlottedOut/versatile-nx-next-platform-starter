@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#- vpcs assassinate-build - try to auto-terminate long running vpcs palm builds
+
+ps wax | grep playwright | awk '{ print $1 }' |  xargs -I%  gdb --batch --eval-command 'call exit(0)' --pid % \;
+exit 0

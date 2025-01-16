@@ -1,0 +1,2 @@
+src/lib/configs/*
+!src/lib/configs/config.public.json

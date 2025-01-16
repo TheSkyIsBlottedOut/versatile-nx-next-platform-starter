@@ -1,0 +1,34 @@
+{
+  "name": "@vpcs/app-logging",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/vpcs/core/app-logging/src",
+  "projectType": "library",
+  "type": "module",
+  "release": {
+    "version": {
+      "generatorOptions": {
+        "packageRoot": "dist/{projectRoot}",
+        "currentVersionResolver": "git-tag"
+      }
+    }
+  },
+  "tags": ["platform vpcs"],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/vpcs/core/app-logging",
+        "main": "libs/vpcs/core/app-logging/src/index.js",
+        "tsConfig": "libs/vpcs/core/app-logging/tsconfig.lib.json",
+        "assets": ["libs/vpcs/core/app-logging/*.md"],
+        "format": ["cjs"]
+      }
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
+      }
+    }
+  }
+}

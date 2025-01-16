@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# vpcs nuke-project <project> - removes a project from the workspace
+pnpm exec nx g @nx/workspace:remove "$1" --verbose

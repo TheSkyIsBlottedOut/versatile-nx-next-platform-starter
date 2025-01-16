@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+# usage: vpcs util macro \
+#                  "verbose|v->vpcsenv:DebugLevel=chatty" \
+#                  "file|f->TEMPFILE" \
+#                  "readfile->FILEDIR" \
+#                  "set-threat-level->verify(yellow|orange|red)"
+#                  "kill:name:killedproc=name=>ps wax | grep $name | awk '{print $1} | kill -9"
+#
+# echoes the appropriate bash parser
+
+class BashOptionizer
+  def initialize(directives)
+    @directives = directives
+  end
+
+  def bash_commandds
+    args = []
+    args.push 'while ${#@} > 0"
+    args.push '  case "${@[0]} in"
+    @directives.each do |dir|
+      args = args.concat this.generate_case_for( dir )
+    end
+
+  end
+
+  def generate_case_for(directive)
+    retval = []
+    structure = directive.match /^(?<switches>[\w\|]+?)(?<values>[\:\w+\=]+)?(?<command_lambda>[-=]\>)(?<command>.*)$/
+    switches = structure[:switches].split(?|).map do |sw|
+      sw[/^-+/] = ''
+      prefix = sw.length > 1 ? '--' : ?-
+      this_switch = "#{prefix}#{sw}"
+    end
+    retval.push %Q/    #{switches.map {|x| %Q!"#{x}"! }.join(?|)}/
+    if structure.has_key?(:values) && structure[:values].length > 1
+      value_identifiers = structure[:values].split(?:)[1..-1]
+      value_identifiers.each do |vid|
+        if vid =~ /\=/ # it sets an existing value
+          raise "Unallowed value!" if vid.scan(/\=/) > 1
+          v = vid.split(?=, 2) # there should only be one
+          resval.push %Q/#{v[0]}=$v[1..-1].jo/.rjust(6, ' ')
+        else
+
+    resval.push (' '*6)
+    resval -1
+
+
+ConstructedScript='for argval in "$@"\ndo\n  case $argval in\n'
+Indices=${!@[*]}
+for index in indices; do
+  Option = "${@[$index]}";
+
+
+
+done
+while

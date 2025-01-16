@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# vpcs sanity ruby - is ruby installed?
+RubyVersion=$(ruby -v 2>/dev/null)
+if [[ -z "$RubyVersion" ]]; then
+  vpcs install ruby
+  RubyVersion=$(ruby -v 2>/dev/null)
+fi
+[[ -z "$(gem list | grep bundler)" ]] || gem install bundler
+if [[ "$RubyVersion" =~ ^ruby\ [12] ]] ; then
+  vpcs log warn "Your Ruby version is too low, please update to 3.2.0 or higher." 1>&2
+  exit 1
+elif [[ -z "$RubyVersion" ]] ; then
+  vpcs log error "Ruby is not installed and the installation failed."
+  exit 1
+else
+  vpcs log chatty "Ruby version is $RubyVersion - let's go!" 1>&2
+fi
+exit 0

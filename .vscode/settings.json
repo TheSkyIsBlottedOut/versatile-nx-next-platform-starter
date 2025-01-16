@@ -1,0 +1,10 @@
+{
+  "css.customData": [
+    ".vscode/css.customData.json"
+  ],
+  "prettier.printWidth": 128,
+  "search.exclude": {
+    "**/node_modules": false,
+    "**/node_moduless": true
+  }
+}

@@ -1,0 +1,3 @@
+#!/usr/bin/env zsh
+#- vpcs tk sshto <droplet> - ssh to the droplet
+doctl compute ssh $1

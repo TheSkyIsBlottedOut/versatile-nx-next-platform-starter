@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#- vpcs lint [target] - Lint the target file or directory, or the default app
+
+AppName="$1"
+if [ -z "$AppName" ]; then
+  AppName="$(vpcs getcfg .apps.webservice)"
+fi
+AppPath="$(vpcs getcfg .apps.$AppName.root)"
+
+pnpm exec nx lint $AppName --verbose --parallel=5 --nxBail  --skipNxCache

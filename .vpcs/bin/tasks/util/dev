@@ -1,0 +1,16 @@
+#!/bin/bash
+#- vpcs dev <project> - serve app with appropriate build targets.
+AppName="$(vpcs getcfg ".apps.webservice")"
+Framework="$(vpcs getcfg ".apps.framework")"
+[[ -z "$AppName" ]] && vpcs log error "No app name found in vpcs.yml; please add an app name to the configuration file." && exit 1;
+[[ -z "$Framework" ]] && vpcs log error "No framework found in vpcs.yml; please add a framework to the configuration file." && exit 1;
+nx reset
+rm -rf dist
+Port="$(vpcs getcfg ".services.$AppName.port")"
+vpcs log info "Serving $AppName with framework $Framework."
+if [[ -z "$Port" ]]; then
+  [[ NODE_ENV = "production" ]] && Port=8080 || Port=3000
+  vpcs log info "Serving on port $Port."
+fi
+pnpm exec nx run $AppName:serve "$@" --port=$Port
+exit 0

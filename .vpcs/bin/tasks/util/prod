@@ -1,0 +1,30 @@
+#!/bin/bash
+#- vpcs serve - serve app in prod with appropriate build targets.
+
+# Update VPCS.yml with production
+vpcs sanity yaml-mgr
+AppName="$(vpcs getcfg ".apps.webservice")"
+[[ -z "$AppName" ]] && vpcs log error "No app name found in vpcs.yml; please add an app name to the configuration file." && exit 1;
+AppEnv="$(vpcs getcfg ".apps.$AppName.globals.environment")"
+[[ -z "$AppEnv" ]] && vpcs log error "No environment found in vpcs.yml; please add an environment to the configuration file." && exit 1;
+if [[ "$AppEnv" = "development" ]]; then
+  # maybe this should go the other way around and we should do refresh-webconfig for prod here
+  yq merge -i "$APP_ROOT/vpcs.yml" "$APP_ROOT/vpcs.production.yml"
+  vpcs refresh-webconfig
+  AppName="$(vpcs getcfg ".apps.webservice")"
+  [[ -z "$AppName" ]] && vpcs log error "No app name found in vpcs.yml post-merge with production; please add an app name to the configuration file." && exit 1;
+fi
+
+Framework="$(vpcs getcfg ".apps.framework")"
+
+[[ -z "$Framework" ]] && vpcs log error "No framework found in vpcs.yml; please add a framework to the configuration file." && exit 1;
+
+if [[ "$Framework" = "fastify" ]]; then
+  Port="$(vpcs getcfg ".apps.$AppName.port")"
+  [[ -z "$Port" ]] || Port=3000
+  pnpm exec nx serve "$AppName" --open --port=$Port "${@:1}"
+else
+  # Ensure the port in project.json is set to the same value as the one in vpcs.yml
+  Port="$(vpcs getcfg ".apps.$AppName.port")"
+  NODE_ENV=production pnpm exec nx build $AppName --verbose --skip-nx-cache --prod && cd dist/apps/$AppName/ && npm i && npm run start --port=$Port "${@:1}"
+fi

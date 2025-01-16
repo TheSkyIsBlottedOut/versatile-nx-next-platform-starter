@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+#- vpcs sys namespace <project> - looks for VPCS project @vpcs/<project> and adds profile support to it.
+Namespace="$1"
+Project="@vpcs/$Namespace"
+crash(){
+  vpcs log error "$@"
+  exit 1
+}
+bye(){
+  vpcs log info "$@"
+  exit 0
+}
+[[ -z "$Namespace" ]] && crash "Namespace is required."
+
+Project="@vpcs/$Namespace"
+[[ -z "$(nx show project $Project)" ]] && crash "Project $Project not found."
+
+if [[ -f "$(locate usr)/namespaces.yml" ]]; then
+  if [[ -z "$(cat "$(locate profiles)/namespaces.yml" | yq .namespaces.$Project)" ]]; then
+    yq w -i "$(locate profiles)/namespaces.yml" "namespaces.$Project" "$APP_ROOT/$(nx show project $Project --json | jq .root)/src/bin"
+    bye "Namespace $Project added to profiles. Try vpcs $Namespace ack (if it's written)".
+  fi
+  echo "---\nnamespaces:\n  $Namespace: $(APP_ROOT/$(nx show project $Project --json | jq .root)/src/bin)" >> "$(locate profiles)/namespaces.yml"
+  bye "Namespace $Project added to profiles. Try vpcs $Namespace ack (if it's written)".
+end
+direnv grant
+exit 0

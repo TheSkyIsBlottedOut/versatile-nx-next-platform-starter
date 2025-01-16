@@ -1,0 +1,26 @@
+Provide helpful feedback, especially in helping developers understand what and how everything works.
+Documentation is provided in local README.md files, and in the alexandria directory.
+
+VPCS is a useful CLI tool, and should be used when possible. If it isn't running, the PATH variable
+is not properly set and the user should `source .envrc` or `direnv allow` to fix this.
+
+As NextJS is in flux, some libraries reimplement MDN functionality lost in translation. For instance,
+the api-helper and classy libs both include stream-to-json files for reading client bodies. classy
+also provides client-side access to context through direct manipulation of localStorage and sessionstorage.
+
+The globalcontext object ($.client.globalctx) accesses the localStorage global context, a base64 encoded
+json string. This stores short-term data for the client to understand context.
+
+Tailwind libraries are currently building the global styles into public/compiled.css, which is included
+in the site layout. Webpack should not use eval mode, as it will trigger security errors.
+
+Browser and session cookies are written by the next.config.mjs file. This site is hosted at palm.iswork.in.
+
+Authentication is provided via an SOA where concerto (mostly in the prerelease-concerto branch) accesses the
+database directly.
+
+Most of the site's goals involve translating business data into several form prefills, and so the different
+structures available from the concerto backend should be mapped (via the valuation library) to interface/type
+structures in the frontend.
+
+We should *always* set the user and auth cookies; it's easy to pull data from the backend.

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# vpcs init <namespace> <lib> - generatees a lib in /libs/<namespace>/<lib>
+A=()
+
+for i in $@; do
+  A+=("$i")
+done
+
+if [[ ${#A[@]} -lt 2 ]]; then
+  echo "Usage: vpcs init <namespace> <lib>" >&2
+  exit 1
+fi
+
+# Check if the second argument is a flag
+
+if [[ "${A[1]}" =~ ^\- ]]; then
+  Namespace="core"
+  LibName="${A[0]}"
+  Offset=1
+else
+  Namespace="${A[0]}"
+  LibName="${A[1]}"
+  Offset=2
+fi
+vpcs log chatty "Namespace: $Namespace LibName: $LibName"
+
+
+vpcs log info "Generating library: $Namespace/$LibName with args ${A[@]:$Offset}"
+pnpm exec nx g @nx/js:lib --bundler=rollup --name="@$Namespace/$LibName" --directory="libs/$Namespace/$LibName" --importPath="@$Namespace/$LibName" --publishable=true --includeBabelRc=false --js=true --minimal=false --tags="applib vpcs" --testEnvironment=node --unitTestRunner=none --projectNameAndRootFormat="as-provided" "${A[@]:$Offset}" -- -- "$LibName"

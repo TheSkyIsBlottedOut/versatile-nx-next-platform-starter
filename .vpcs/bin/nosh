@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#- nosh <command string> - invoke ruby task runner
+vpcs sanity ruby
+bundle install --standalone
+ruby "$VPCS_ROOT/ruby/no.sh" "$@"
+exit 0

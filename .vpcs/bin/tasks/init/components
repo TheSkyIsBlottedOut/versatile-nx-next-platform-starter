@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#- vpcs init components <name> - creates a react component library
+
+AppName="$1"
+[[ -z "$AppName" ]] && echo "Usage: vpcs init components <name>" && exit 1
+pnpm exec nx g @nx/react:library --name="$AppName" --importPath="@ux/$AppName" --component=true --bundler=rollup --globalCss=false --linter=none --minimal=true --directory="libs/ux/components/$AppName"  --tags="vpcs components react"

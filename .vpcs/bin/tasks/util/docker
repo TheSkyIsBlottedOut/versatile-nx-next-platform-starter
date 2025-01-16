@@ -1,0 +1,3 @@
+#!/bin/bash
+# vpcs docker - runs docker buildx build .
+docker buildx build .

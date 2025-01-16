@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#- vpcs switch <project> - sets new default project
+[[ -z "$1" ]] && vpcs log error "No project name provided." && exit 1;
+[[ -z "$(nx show project "$1" 2>/dev/null)" ]]  && vpcs log error "NX doesn't return project info!" && exit 1
+vpcs update-config ".apps.webservice" "$1"
+Framework="$(vpcs getcfg ".services.$1.framework")"
+[[ -z "$Framework" ]] && Framework="fastify" # aka a node app
+vpcs update-config ".apps.framework" "$Framework"
+vpcs nx2vpcs
+vpcs refresh-webconfig
+vpcs log info "Switched to project $1 with framework $Framework."

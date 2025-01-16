@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "declaration": true,
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "src/index.ts", "src/lib/utilities.js", "src/lib/generic-request.ts", "src/lib/express-request.js"],
+  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
+}

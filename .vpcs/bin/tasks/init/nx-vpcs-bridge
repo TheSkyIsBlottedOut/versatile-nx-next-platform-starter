@@ -1,0 +1,5 @@
+#!/bin/bash
+#- vpcs init nx-vpcs-bridge - makes some vpcs targets available in the package.json.
+# look at nx task running for more - we need to set commands in nx and the apps here. TODO
+vpcs nxconf root package ".nx"
+vpcs log info "This feature has not yet been developed yet! Please watch this space."

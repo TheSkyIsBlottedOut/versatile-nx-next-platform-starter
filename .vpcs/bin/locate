@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+#- locate [name|all]
+
+testNamespace(){
+  local Namespace="$1"
+  [[ -d "$APP_ROOT/libs/vpcs/core/$Namespace/src/bin" ]] && return 0
+  return 1
+}
+
+[[ -z "$VPCS_ROOT" ]] && VPCS_ROOT="$(realpath $(dirname "$0"/..))"
+[[ -z "$APP_ROOT" ]] && APP_ROOT="$(realpath "$VPCS_ROOT/..")"
+[[ -z "$VPCS_ENV" ]] && VPCS_ENV="development"
+PathToLocate="$1"
+[[ -z "${PathToLocate}" ]] && echo "$APP_ROOT"
+case "${PathToLocate}" in
+  all)
+    MATCHES=($(cat $0 | egrep "^\s{2,}\w.+\;\;\s*$"  | tr ') ;|' '    '  | sed 's/\s+/ /g' | sed 's/^\s+|\s+$//g'))
+    for i in ${MATCHES[@]}; do
+      if [[ "$i" =~ \" ]]; then
+      printf '~> '
+        eval "echo $i";
+      elif [[ "$i" = "echo" ]]; then
+        #noop
+        sleep 0
+      else
+        printf '%s ' $i
+      fi
+    done
+    ;;
+  vpcs|platform|root) echo "${VPCS_ROOT}";;
+  env) echo "$VPCS_ROOT/etc/env/$VPCS_ENV";;
+  docker|dockerfile) echo "${VPCS_ROOT}/etc/env/${VPCS_ENV}/Dockerfile";;
+  configs) echo "${APP_ROOT}/$(vpcs getcfg .services.$(vpcs getcfg .apps.config).root)/src/lib/configs";;
+  bin) echo "${VPCS_ROOT}/bin";;
+  etc) echo "${VPCS_ROOT}/etc";;
+  templates|template) echo "${VPCS_ROOT}/etc/template";;
+  vpcs-internal-config) echo "${VPCS_ROOT}/etc/template/vpcs.yml";;
+  vpcs-config) echo "${APP_ROOT}/vpcs.yml";;
+  tmp) echo "${VPCS_ROOT}/tmp";;
+  log) echo "${APP_ROOT}/logs";;
+  usr) echo "${APP_ROOT}/.vpcs/usr";;
+  tasks|task) echo "${VPCS_ROOT}/bin/tasks";;
+  profiles) echo "$APP_ROOT/.vpcs/usr/profiles";;
+  base-profile) echo "$APP_ROOT/.vpcs/usr/profiles/base.profile";;
+  nx-cache) echo "$APP_ROOT/.nx/cache";;
+  namespace-template) echo "$APP_ROOT/.vpcs/usr/namespaces.yml";;
+  namespace) testNamespace "$2" && echo "$APP_ROOT/libs/vpcs/core/$2/src/bin" || echo "/dev/null";;
+  *) echo "/dev/null";;
+esac
+exit 0

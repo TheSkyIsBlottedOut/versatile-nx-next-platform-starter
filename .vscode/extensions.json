@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "ms-playwright.playwright",
+    "esbenp.prettier-vscode",
+    "firsttris.vscode-jest-runner",
+    "elltg.elltg-nx-script-run",
+    "ms-azuretools.vscode-docker",
+    "mscolnick.export-typescript",
+    "kyledavide.vscode-project-links"
+  ]
+}

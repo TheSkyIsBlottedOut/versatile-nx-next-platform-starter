@@ -1,0 +1,12 @@
+{
+  "name": "@vpcs/app-logging",
+  "version": "0.0.1",
+  "dependencies": {},
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    "server": "./server.js",
+    "client": "./client.js",
+    "default": "./index.js"
+  }
+}

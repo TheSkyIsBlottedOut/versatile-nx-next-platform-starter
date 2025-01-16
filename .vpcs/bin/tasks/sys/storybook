@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#- vpcs sys storybook <project> - creates a storybook for a project
+
+ProjectName="$1"
+[[ -z "$ProjectName" ]] && echo "Usage: vpcs sys storybook <project>" && exit 1
+pnpm exec nx g @nx/storybook:configuration --project=$ProjectName --js=true --interactionTests=false --uiFramework=@storybook/react-webpack5

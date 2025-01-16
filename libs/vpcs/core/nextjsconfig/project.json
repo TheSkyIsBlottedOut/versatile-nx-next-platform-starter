@@ -1,0 +1,39 @@
+{
+  "name": "@vpcs/nextjsconfig",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "description": "VPCS NextJS core config library",
+  "sourceRoot": "libs/vpcs/core/nextjsconfig/src",
+  "projectType": "library",
+  "release": {
+    "version": {
+      "generatorOptions": {
+        "packageRoot": "dist/{projectRoot}",
+        "currentVersionResolver": "git-tag"
+      }
+    }
+  },
+  "tags": ["platform", "vpcs"],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/vpcs/core/nextjsconfig",
+        "main": "libs/vpcs/core/nextjsconfig/src/index.ts",
+        "tsConfig": "libs/vpcs/core/nextjsconfig/tsconfig.lib.json",
+        "assets": [
+          "libs/vpcs/core/nextjsconfig/*.md",
+          "libs/vpcs/core/nextjsconfig/server.ts",
+          "libs/vpcs/core/nextjsconfig/client.ts",
+          "libs/vpcs/core/nextjsconfig/next-server.ts"
+        ],
+        "format": ["cjs", "esm"]
+      }
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
+      }
+    }
+  }
+}

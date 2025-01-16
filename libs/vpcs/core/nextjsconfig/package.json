@@ -1,0 +1,12 @@
+{
+  "name": "@vpcs/nextjsconfig",
+  "version": "0.0.1",
+  "dependencies": {},
+  "main": "./index.ts",
+  "exports": {
+    "server": "./server.ts",
+    "next-server": "./next-server.ts",
+    "client": "./client.ts",
+    "default": "./index.ts"
+  }
+}

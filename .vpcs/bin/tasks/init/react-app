@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#- vpcs init react-app <appname> - creates a new react
+
+vpcs sanity nx-workspace
+pnpm exec nx add @nx/react @nx/vite @nx/js
+pnpm i -D vite react @vitejs/plugin-react-refresh @vitejs/plugin-react react-dom
+
+if [[  -z "$1" ]]; then
+  vpcs log info "Svelte installed; rerun with an appname to generate an app."
+  exit 0;
+fi
+UseJS="true"
+[[ "$(vpcs getcfg ".apps.language")" == "ts"  ]] && UseJS="false"
+AppName="$(echo $1 | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')"
+if [[ "$AppName" =~ ^.?.?$  ]]; then
+  vpcs log error "App name \"$1\" resolves to libname \"$AppName\" with fewer than 3 characters; please choose a different name."
+  exit 1
+fi
+shift 1
+nx g @nx/react:app "apps/$AppName" --verbose --bundler="vite" --name="$AppName" --tags="vpcs app react" --js="$UseJS" --directory="apps/$AppName" --e2eTestRunner="none" --use-pnpm --globalCss="true" --style="scss" --compiler="swc" --linter="none" --minimal=true "$@" -- -- "$AppName"
+vpcs sys nx2vpcs
+exit 0

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+#- vpcs init next-lib - creates an nx/next workspace library
+#- Usage: vpcs init next-lib <name> [...args]
+vpcs sanity nx-workspace
+vpcs sanity pnpm-pkg "next" || pnpm add @nx/next # don't let nx do this
+if [[  -z "$1" ]]; then
+  vpcs log info "Nextjs installed; rerun with an appname to generate an app."
+  exit 0;
+fi
+UseJS="false"
+[[ "$(vpcs getcfg ".apps.language")" == "js"  ]] && UseJS="true"
+
+LibName="$(echo $1 | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')"
+if [[ "$LibName" =~ ^.?.?$  ]]; then
+  vpcs log error "App name \"$1\" resolves to libname \"$LibName\" with fewer than 3 characters; please choose a different name."
+  exit 1;
+fi
+shift 1
+pnpm exec nx g @nx/next:library --directory="libs/@tk/$LibName" --name="$LibName" --importPath="@libs/$LibName" --js="$UseJS" --e2eTestRunner="playwright" --linter="eslint" --projectNameAndRootFormat="as-provided"  --use-pnpm "$@"  -- -- "$LibName"
+vpcs log info "Library $LibName created in libs/@tk/$LibName"
+exit 0

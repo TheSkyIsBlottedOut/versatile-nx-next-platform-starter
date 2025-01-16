@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#- vpcs palm - just run the build for our app
+APP_NAME="$(vpcs getcfg ".apps.webservice")"
+if [[ -z   "$APP_NAME" ]]; then
+  vpcs log error "No app name found in vpcs.yml; please add an app name to the configuration file."
+  exit 1;
+fi
+cd $APP_ROOT
+rm -rf $APP_ROOT/dist
+mkdir -p $APP_ROOT/dist
+mkdir -p $APP_ROOT/libs/vpcs/core/nextjsconfig/src/lib/configs
+pnpm i
+#!/usr/bin/env bash
+NEXT_TELEMETRY_DEBUG=1 NODE_ENV=production pnpm exec nx build "$APP_NAME"  --show-all --prod --with-deps --verbose --debug --skip-nx-cache
+exit 0
